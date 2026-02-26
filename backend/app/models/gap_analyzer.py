@@ -1,10 +1,11 @@
-def analyze_skill_gap(user_skills, job_skills):
-    user_set = set(user_skills)
-    job_set = set(job_skills)
+def analyze_gap(user_skills, required_skills):
+    user_set = set(s["skill"] for s in user_skills)
+    req_set = set(required_skills)
+
+    missing = req_set - user_set
+    extra = user_set - req_set
 
     return {
-        "matched_skills": list(user_set & job_set),
-        "missing_skills": list(job_set - user_set),
-        "match_percentage": round((len(user_set & job_set) / len(job_set)) * 100, 2)
-        if job_set else 0
+        "missing_skills": list(missing),
+        "extra_skills": list(extra)
     }

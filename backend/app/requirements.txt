@@ -10,3 +10,13 @@ sqlalchemy
 pymongo
 python-dotenv
 passlib[bcrypt]
+torch
+python-jose
+PyMuPDF
+pdfplumber
+python-docx
+email-validator
+python-multipart
+requests
+chromadb>=0.4.24
+sentence-transformers>=2.2.2

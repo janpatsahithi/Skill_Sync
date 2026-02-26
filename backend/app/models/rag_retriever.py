@@ -1,16 +1,16 @@
-import faiss, numpy as np
-from sentence_transformers import SentenceTransformer
+# app/models/rag_retriever.py
 
-model = SentenceTransformer("all-MiniLM-L6-v2")
-index = faiss.IndexFlatL2(384)
-documents = []
+from app.db.chroma_store import ChromaStore
 
-def add_documents(docs):
-    vectors = model.encode(docs)
-    index.add(np.array(vectors))
-    documents.extend(docs)
 
-def retrieve_context(query, k=2):
-    vec = model.encode([query])
-    _, idx = index.search(vec, k)
-    return [documents[i] for i in idx[0]]
+class RAGRetriever:
+    def __init__(self):
+        self.store = ChromaStore()
+
+    def retrieve(self, query: str, k: int = 4) -> list[str]:
+        return self.store.query(query, k)
+
+
+# Backward-compatible helper
+def retrieve_docs(query: str, k: int = 4) -> list[str]:
+    return RAGRetriever().retrieve(query, k)

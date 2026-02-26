@@ -1,0 +1,764 @@
+{
+    "version": "1.0",
+    "description": "SkillSync curated fallback occupation-skill dataset",
+    "roles": [
+        {
+            "role": "data scientist",
+            "category": "data",
+            "skills": [
+                {
+                    "name": "python",
+                    "weight": 3
+                },
+                {
+                    "name": "machine learning",
+                    "weight": 3
+                },
+                {
+                    "name": "statistics",
+                    "weight": 3
+                },
+                {
+                    "name": "sql",
+                    "weight": 2
+                },
+                {
+                    "name": "data visualization",
+                    "weight": 2
+                },
+                {
+                    "name": "deep learning",
+                    "weight": 1
+                }
+            ]
+        },
+        {
+            "role": "data analyst",
+            "category": "data",
+            "skills": [
+                {
+                    "name": "sql",
+                    "weight": 3
+                },
+                {
+                    "name": "excel",
+                    "weight": 3
+                },
+                {
+                    "name": "data visualization",
+                    "weight": 2
+                },
+                {
+                    "name": "power bi",
+                    "weight": 2
+                },
+                {
+                    "name": "statistics",
+                    "weight": 2
+                }
+            ]
+        },
+        {
+            "role": "data engineer",
+            "category": "data",
+            "skills": [
+                {
+                    "name": "python",
+                    "weight": 3
+                },
+                {
+                    "name": "sql",
+                    "weight": 3
+                },
+                {
+                    "name": "etl",
+                    "weight": 3
+                },
+                {
+                    "name": "spark",
+                    "weight": 2
+                },
+                {
+                    "name": "data warehousing",
+                    "weight": 2
+                }
+            ]
+        },
+        {
+            "role": "machine learning engineer",
+            "category": "data",
+            "skills": [
+                {
+                    "name": "python",
+                    "weight": 3
+                },
+                {
+                    "name": "pytorch",
+                    "weight": 3
+                },
+                {
+                    "name": "tensorflow",
+                    "weight": 3
+                },
+                {
+                    "name": "mlops",
+                    "weight": 2
+                },
+                {
+                    "name": "model deployment",
+                    "weight": 2
+                }
+            ]
+        },
+        {
+            "role": "ai engineer",
+            "category": "data",
+            "skills": [
+                {
+                    "name": "deep learning",
+                    "weight": 3
+                },
+                {
+                    "name": "transformers",
+                    "weight": 3
+                },
+                {
+                    "name": "nlp",
+                    "weight": 2
+                },
+                {
+                    "name": "computer vision",
+                    "weight": 2
+                },
+                {
+                    "name": "llms",
+                    "weight": 2
+                }
+            ]
+        },
+        {
+            "role": "frontend developer",
+            "category": "software",
+            "skills": [
+                {
+                    "name": "react",
+                    "weight": 3
+                },
+                {
+                    "name": "javascript",
+                    "weight": 3
+                },
+                {
+                    "name": "html",
+                    "weight": 2
+                },
+                {
+                    "name": "css",
+                    "weight": 2
+                },
+                {
+                    "name": "responsive design",
+                    "weight": 1
+                }
+            ]
+        },
+        {
+            "role": "backend developer",
+            "category": "software",
+            "skills": [
+                {
+                    "name": "python",
+                    "weight": 3
+                },
+                {
+                    "name": "node.js",
+                    "weight": 3
+                },
+                {
+                    "name": "rest api",
+                    "weight": 2
+                },
+                {
+                    "name": "mongodb",
+                    "weight": 2
+                },
+                {
+                    "name": "authentication",
+                    "weight": 2
+                }
+            ]
+        },
+        {
+            "role": "full stack developer",
+            "category": "software",
+            "skills": [
+                {
+                    "name": "react",
+                    "weight": 3
+                },
+                {
+                    "name": "node.js",
+                    "weight": 3
+                },
+                {
+                    "name": "mongodb",
+                    "weight": 2
+                },
+                {
+                    "name": "rest api",
+                    "weight": 2
+                },
+                {
+                    "name": "deployment",
+                    "weight": 1
+                }
+            ]
+        },
+        {
+            "role": "mobile app developer",
+            "category": "software",
+            "skills": [
+                {
+                    "name": "flutter",
+                    "weight": 3
+                },
+                {
+                    "name": "react native",
+                    "weight": 3
+                },
+                {
+                    "name": "android",
+                    "weight": 2
+                },
+                {
+                    "name": "ios",
+                    "weight": 2
+                },
+                {
+                    "name": "firebase",
+                    "weight": 1
+                }
+            ]
+        },
+        {
+            "role": "devops engineer",
+            "category": "cloud",
+            "skills": [
+                {
+                    "name": "docker",
+                    "weight": 3
+                },
+                {
+                    "name": "kubernetes",
+                    "weight": 3
+                },
+                {
+                    "name": "ci/cd",
+                    "weight": 2
+                },
+                {
+                    "name": "aws",
+                    "weight": 2
+                },
+                {
+                    "name": "linux",
+                    "weight": 2
+                }
+            ]
+        },
+        {
+            "role": "cloud engineer",
+            "category": "cloud",
+            "skills": [
+                {
+                    "name": "aws",
+                    "weight": 3
+                },
+                {
+                    "name": "azure",
+                    "weight": 2
+                },
+                {
+                    "name": "gcp",
+                    "weight": 2
+                },
+                {
+                    "name": "cloud architecture",
+                    "weight": 3
+                },
+                {
+                    "name": "infrastructure as code",
+                    "weight": 2
+                }
+            ]
+        },
+        {
+            "role": "cybersecurity analyst",
+            "category": "security",
+            "skills": [
+                {
+                    "name": "network security",
+                    "weight": 3
+                },
+                {
+                    "name": "penetration testing",
+                    "weight": 3
+                },
+                {
+                    "name": "risk assessment",
+                    "weight": 2
+                },
+                {
+                    "name": "incident response",
+                    "weight": 2
+                },
+                {
+                    "name": "cryptography",
+                    "weight": 2
+                }
+            ]
+        },
+        {
+            "role": "software developer",
+            "category": "software",
+            "skills": [
+                {
+                    "name": "programming",
+                    "weight": 3
+                },
+                {
+                    "name": "data structures",
+                    "weight": 3
+                },
+                {
+                    "name": "algorithms",
+                    "weight": 3
+                },
+                {
+                    "name": "git",
+                    "weight": 2
+                },
+                {
+                    "name": "testing",
+                    "weight": 2
+                }
+            ]
+        },
+        {
+            "role": "embedded systems software developer",
+            "category": "software",
+            "skills": [
+                {
+                    "name": "c",
+                    "weight": 3
+                },
+                {
+                    "name": "c++",
+                    "weight": 3
+                },
+                {
+                    "name": "embedded systems",
+                    "weight": 3
+                },
+                {
+                    "name": "microcontrollers",
+                    "weight": 2
+                },
+                {
+                    "name": "rtos",
+                    "weight": 2
+                }
+            ]
+        },
+        {
+            "role": "industrial mobile devices software developer",
+            "category": "software",
+            "skills": [
+                {
+                    "name": "android",
+                    "weight": 3
+                },
+                {
+                    "name": "kotlin",
+                    "weight": 3
+                },
+                {
+                    "name": "mobile device management",
+                    "weight": 2
+                },
+                {
+                    "name": "api integration",
+                    "weight": 2
+                },
+                {
+                    "name": "device security",
+                    "weight": 2
+                }
+            ]
+        },
+        {
+            "role": "product manager",
+            "category": "management",
+            "skills": [
+                {
+                    "name": "product strategy",
+                    "weight": 3
+                },
+                {
+                    "name": "roadmapping",
+                    "weight": 3
+                },
+                {
+                    "name": "stakeholder management",
+                    "weight": 2
+                },
+                {
+                    "name": "agile",
+                    "weight": 2
+                },
+                {
+                    "name": "user research",
+                    "weight": 2
+                }
+            ]
+        },
+        {
+            "role": "business analyst",
+            "category": "management",
+            "skills": [
+                {
+                    "name": "business analysis",
+                    "weight": 3
+                },
+                {
+                    "name": "sql",
+                    "weight": 2
+                },
+                {
+                    "name": "requirements gathering",
+                    "weight": 3
+                },
+                {
+                    "name": "data visualization",
+                    "weight": 2
+                },
+                {
+                    "name": "stakeholder communication",
+                    "weight": 2
+                }
+            ]
+        },
+        {
+            "role": "project manager",
+            "category": "management",
+            "skills": [
+                {
+                    "name": "project planning",
+                    "weight": 3
+                },
+                {
+                    "name": "risk management",
+                    "weight": 2
+                },
+                {
+                    "name": "agile",
+                    "weight": 2
+                },
+                {
+                    "name": "stakeholder communication",
+                    "weight": 3
+                },
+                {
+                    "name": "budgeting",
+                    "weight": 2
+                }
+            ]
+        },
+        {
+            "role": "operations manager",
+            "category": "management",
+            "skills": [
+                {
+                    "name": "operations strategy",
+                    "weight": 3
+                },
+                {
+                    "name": "process improvement",
+                    "weight": 3
+                },
+                {
+                    "name": "resource planning",
+                    "weight": 2
+                },
+                {
+                    "name": "kpi tracking",
+                    "weight": 2
+                },
+                {
+                    "name": "team leadership",
+                    "weight": 2
+                }
+            ]
+        },
+        {
+            "role": "digital marketing specialist",
+            "category": "marketing",
+            "skills": [
+                {
+                    "name": "seo",
+                    "weight": 3
+                },
+                {
+                    "name": "google ads",
+                    "weight": 2
+                },
+                {
+                    "name": "social media marketing",
+                    "weight": 3
+                },
+                {
+                    "name": "content marketing",
+                    "weight": 2
+                },
+                {
+                    "name": "analytics",
+                    "weight": 2
+                }
+            ]
+        },
+        {
+            "role": "content strategist",
+            "category": "marketing",
+            "skills": [
+                {
+                    "name": "content planning",
+                    "weight": 3
+                },
+                {
+                    "name": "seo writing",
+                    "weight": 2
+                },
+                {
+                    "name": "audience research",
+                    "weight": 3
+                },
+                {
+                    "name": "editorial workflow",
+                    "weight": 2
+                },
+                {
+                    "name": "storytelling",
+                    "weight": 2
+                }
+            ]
+        },
+        {
+            "role": "hr analyst",
+            "category": "management",
+            "skills": [
+                {
+                    "name": "hr analytics",
+                    "weight": 3
+                },
+                {
+                    "name": "excel",
+                    "weight": 2
+                },
+                {
+                    "name": "reporting",
+                    "weight": 2
+                },
+                {
+                    "name": "employee lifecycle",
+                    "weight": 2
+                },
+                {
+                    "name": "hr systems",
+                    "weight": 2
+                }
+            ]
+        },
+        {
+            "role": "recruiter",
+            "category": "management",
+            "skills": [
+                {
+                    "name": "talent sourcing",
+                    "weight": 3
+                },
+                {
+                    "name": "interviewing",
+                    "weight": 3
+                },
+                {
+                    "name": "candidate screening",
+                    "weight": 2
+                },
+                {
+                    "name": "ats tools",
+                    "weight": 2
+                },
+                {
+                    "name": "offer negotiation",
+                    "weight": 2
+                }
+            ]
+        },
+        {
+            "role": "sales executive",
+            "category": "management",
+            "skills": [
+                {
+                    "name": "lead generation",
+                    "weight": 3
+                },
+                {
+                    "name": "crm",
+                    "weight": 3
+                },
+                {
+                    "name": "sales pipeline",
+                    "weight": 2
+                },
+                {
+                    "name": "negotiation",
+                    "weight": 2
+                },
+                {
+                    "name": "client management",
+                    "weight": 2
+                }
+            ]
+        },
+        {
+            "role": "management consultant",
+            "category": "management",
+            "skills": [
+                {
+                    "name": "problem solving",
+                    "weight": 3
+                },
+                {
+                    "name": "business strategy",
+                    "weight": 3
+                },
+                {
+                    "name": "data analysis",
+                    "weight": 2
+                },
+                {
+                    "name": "presentation",
+                    "weight": 2
+                },
+                {
+                    "name": "stakeholder management",
+                    "weight": 2
+                }
+            ]
+        },
+        {
+            "role": "qa engineer",
+            "category": "software",
+            "skills": [
+                {
+                    "name": "testing",
+                    "weight": 3
+                },
+                {
+                    "name": "automation testing",
+                    "weight": 3
+                },
+                {
+                    "name": "selenium",
+                    "weight": 2
+                },
+                {
+                    "name": "bug tracking",
+                    "weight": 2
+                },
+                {
+                    "name": "quality assurance",
+                    "weight": 2
+                }
+            ]
+        },
+        {
+            "role": "ui/ux designer",
+            "category": "design",
+            "skills": [
+                {
+                    "name": "ui design",
+                    "weight": 3
+                },
+                {
+                    "name": "ux research",
+                    "weight": 3
+                },
+                {
+                    "name": "figma",
+                    "weight": 2
+                },
+                {
+                    "name": "prototyping",
+                    "weight": 2
+                },
+                {
+                    "name": "user testing",
+                    "weight": 2
+                }
+            ]
+        },
+        {
+            "role": "blockchain developer",
+            "category": "emerging tech",
+            "skills": [
+                {
+                    "name": "solidity",
+                    "weight": 3
+                },
+                {
+                    "name": "smart contracts",
+                    "weight": 3
+                },
+                {
+                    "name": "ethereum",
+                    "weight": 2
+                },
+                {
+                    "name": "web3",
+                    "weight": 2
+                },
+                {
+                    "name": "cryptography",
+                    "weight": 2
+                }
+            ]
+        },
+        {
+            "role": "site reliability engineer",
+            "category": "cloud",
+            "skills": [
+                {
+                    "name": "linux",
+                    "weight": 3
+                },
+                {
+                    "name": "monitoring",
+                    "weight": 3
+                },
+                {
+                    "name": "automation",
+                    "weight": 2
+                },
+                {
+                    "name": "kubernetes",
+                    "weight": 2
+                },
+                {
+                    "name": "incident management",
+                    "weight": 2
+                }
+            ]
+        }
+    ]
+}

@@ -1,8 +1,5 @@
-from app.db.database import engine
+from app.db.database import get_db
 
-try:
-    conn = engine.connect()
-    print("Database connected successfully")
-    conn.close()
-except Exception as e:
-    print("Error:", e)
+db = get_db()
+
+print("Collections:", db.list_collection_names())
