@@ -3,6 +3,8 @@ import {
   LayoutDashboard,
   FileText,
   BookOpen,
+  Briefcase,
+  Bot,
   Users,
   MessageSquare,
   User,
@@ -19,6 +21,8 @@ const sections = [
     items: [
       { path: '/app/dashboard', label: 'Dashboard', icon: LayoutDashboard },
       { path: '/app/skills', label: 'Skills', icon: FileText },
+      { path: '/app/job-recommendations', label: 'Job Recommendations', icon: Briefcase },
+      { path: '/app/ai-advisor', label: 'AI Advisor', icon: Bot },
       { path: '/app/learning-path', label: 'Learning', icon: BookOpen },
       { path: '/app/planning', label: 'Career Plan', icon: Target },
     ],

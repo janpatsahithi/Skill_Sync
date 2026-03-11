@@ -61,6 +61,29 @@ class OccupationResponse(BaseModel):
 
 
 # -----------------------------
+# JOB RECOMMENDATIONS
+# -----------------------------
+class JobLinks(BaseModel):
+    linkedin: str
+    indeed: str
+    naukri: str
+
+
+class JobRecommendationResponse(BaseModel):
+    role: str
+    match_score: int
+    description: str
+    matched_skills: List[str]
+    missing_skills: List[str]
+    job_links: JobLinks
+
+
+class JobRecommendationListResponse(BaseModel):
+    jobs: List[JobRecommendationResponse]
+    message: Optional[str] = None
+
+
+# -----------------------------
 # USER CONTEXT & PROFILE
 # -----------------------------
 class UserContextCreate(BaseModel):

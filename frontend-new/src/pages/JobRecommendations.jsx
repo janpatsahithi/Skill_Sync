@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { MapPin, Building, DollarSign, Clock, ExternalLink, Bookmark, TrendingUp, Loader2 } from "lucide-react";
+import { ExternalLink, Loader2 } from "lucide-react";
 import ProgressRing from "../components/ProgressRing";
 import SkillChip from "../components/SkillChip";
 import { aiEngineAPI } from "../services/api";
@@ -12,6 +12,10 @@ const JobRecommendations = () => {
   const [jobs, setJobs] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+  const topFive = jobs.slice(0, 5);
+  const avgTopFive = topFive.length > 0
+    ? Math.round(topFive.reduce((sum, job) => sum + (job.match_score || 0), 0) / topFive.length)
+    : 0;
 
   useEffect(() => {
     fetchJobRecommendations();
@@ -57,8 +61,13 @@ const JobRecommendations = () => {
         return;
       }
 
-      const skillNames = currentSkills.map(s => typeof s === 'string' ? s : s.skill || s.name || s);
-      const response = await aiEngineAPI.getJobRecommendations({ skills: skillNames });
+      const skillUris = currentSkills
+        .map((s) => (typeof s === "string" ? null : s.uri || null))
+        .filter(Boolean);
+      const fallbackSkillNames = currentSkills.map((s) => (typeof s === "string" ? s : s.skill || s.name || s));
+      const payloadSkills = skillUris.length > 0 ? skillUris : fallbackSkillNames;
+
+      const response = await aiEngineAPI.getJobRecommendations({ skills: payloadSkills });
       setJobs(response.data?.jobs || response.data || []);
     } catch (err) {
       console.error("Failed to fetch jobs:", err);
@@ -72,8 +81,8 @@ const JobRecommendations = () => {
     return (
       <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #FAF5FF 0%, #FDF2F8 50%, #EFF6FF 100%)' }}>
         <div className="text-center">
-          <Loader2 className="w-8 h-8 animate-spin mx-auto mb-2 text-white" />
-          <p className="text-white">Loading job recommendations...</p>
+          <Loader2 className="w-8 h-8 animate-spin mx-auto mb-2 text-slate-700" />
+          <p className="text-slate-700">Loading job recommendations...</p>
         </div>
       </div>
     );
@@ -84,7 +93,7 @@ const JobRecommendations = () => {
       <div className="min-h-[calc(100vh-4rem)] animate-fade-in" style={{ background: 'linear-gradient(135deg, #FAF5FF 0%, #FDF2F8 50%, #EFF6FF 100%)' }}>
         <div className="container mx-auto px-4 py-10">
           <div className="text-center py-12">
-            <p className="text-white/80 mb-4">{error}</p>
+            <p className="text-slate-700 mb-4">{error}</p>
             <button
               onClick={() => navigate("/app/resume-upload")}
               className="px-6 py-3 text-white rounded-lg font-semibold transition-all duration-300 hover:scale-105"
@@ -106,35 +115,26 @@ const JobRecommendations = () => {
           <h1 className="text-3xl md:text-4xl font-bold mb-2 bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent">
             Job Recommendations
           </h1>
-          <p className="text-white/80">
-            Curated job opportunities based on your skills and experience
-          </p>
+          <p className="text-slate-700">AI-powered role recommendations tailored to your skill profile</p>
         </div>
 
         {/* Stats */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
           <div className="rounded-xl border p-4 text-center animate-fade-in" style={{ backgroundColor: 'rgba(255, 255, 255, 0.2)', borderColor: 'rgba(255, 255, 255, 0.3)' }}>
-            <p className="text-2xl font-bold text-white">{jobs.length}</p>
-            <p className="text-sm text-white/80">Matching Jobs</p>
+            <p className="text-2xl font-bold text-slate-900">{jobs.length}</p>
+            <p className="text-sm text-slate-700">Recommended Roles</p>
           </div>
           <div className="rounded-xl border p-4 text-center animate-fade-in" style={{ backgroundColor: 'rgba(255, 255, 255, 0.2)', borderColor: 'rgba(255, 255, 255, 0.3)', animationDelay: '100ms' }}>
-            <p className="text-2xl font-bold text-white">
-              {jobs.length > 0 ? Math.round(jobs.reduce((a, j) => a + (j.matchScore || 0), 0) / jobs.length) : 0}%
+            <p className="text-2xl font-bold text-slate-900">
+              {avgTopFive}%
             </p>
-            <p className="text-sm text-white/80">Avg. Match Score</p>
+            <p className="text-sm text-slate-700">Avg Match (Top 5)</p>
           </div>
           <div className="rounded-xl border p-4 text-center animate-fade-in" style={{ backgroundColor: 'rgba(255, 255, 255, 0.2)', borderColor: 'rgba(255, 255, 255, 0.3)', animationDelay: '200ms' }}>
-            <p className="text-2xl font-bold text-white">
-              {jobs.filter(j => j.location?.toLowerCase().includes('remote')).length}
+            <p className="text-2xl font-bold text-slate-900">
+              {topFive[0]?.match_score || 0}%
             </p>
-            <p className="text-sm text-white/80">Remote Options</p>
-          </div>
-          <div className="rounded-xl border p-4 text-center animate-fade-in" style={{ backgroundColor: 'rgba(255, 255, 255, 0.2)', borderColor: 'rgba(255, 255, 255, 0.3)', animationDelay: '300ms' }}>
-            <div className="flex items-center justify-center gap-1" style={{ color: '#22c55e' }}>
-              <TrendingUp className="w-5 h-5" />
-              <span className="text-2xl font-bold">+12</span>
-            </div>
-            <p className="text-sm text-white/80">New This Week</p>
+            <p className="text-sm text-slate-700">Top Role Match</p>
           </div>
         </div>
 
@@ -142,7 +142,7 @@ const JobRecommendations = () => {
         <div className="space-y-4">
           {jobs.length === 0 ? (
             <div className="text-center py-12">
-              <p className="text-white/80 mb-4">No job recommendations found. Try uploading your resume or updating your skills.</p>
+              <p className="text-slate-700 mb-4">No job recommendations found. Try uploading your resume or updating your skills.</p>
               <button
                 onClick={() => navigate("/app/resume-upload")}
                 className="px-6 py-3 text-white rounded-lg font-semibold transition-all duration-300 hover:scale-105"
@@ -168,47 +168,34 @@ const JobRecommendations = () => {
                     <div className="flex items-start gap-4">
                       {/* Company Logo */}
                       <div className="w-14 h-14 rounded-xl flex items-center justify-center shrink-0 bg-gradient-to-r from-primary to-secondary">
-                        <span className="text-white font-bold">
-                          {job.company?.[0]?.toUpperCase() || 'J'}
-                        </span>
+                        <span className="text-white font-bold">{(job.role || job.title || "J")[0]?.toUpperCase() || "J"}</span>
                       </div>
 
                       <div className="flex-1">
-                        <h3 className="font-semibold text-lg mb-1 text-white">{job.title || job.job_title}</h3>
-                        <div className="flex flex-wrap items-center gap-3 text-sm text-white/80 mb-3">
-                          <span className="flex items-center gap-1">
-                            <Building className="w-4 h-4" />
-                            {job.company || 'Company'}
-                          </span>
-                          <span className="flex items-center gap-1">
-                            <MapPin className="w-4 h-4" />
-                            {job.location || 'Location'}
-                          </span>
-                          {job.salary && (
-                            <span className="flex items-center gap-1">
-                              <DollarSign className="w-4 h-4" />
-                              {job.salary}
-                            </span>
-                          )}
-                          {job.postedDays && (
-                            <span className="flex items-center gap-1">
-                              <Clock className="w-4 h-4" />
-                              {job.postedDays === 1 ? "Posted today" : `${job.postedDays} days ago`}
-                            </span>
-                          )}
+                        <h3 className="font-semibold text-lg mb-1 text-slate-900">{job.role || job.title || job.job_title}</h3>
+                        <div className="text-sm text-slate-700 mb-3 line-clamp-2">
+                          {job.description || "Recommended role based on your current skill profile."}
                         </div>
 
-                        {/* Required Skills */}
-                        {job.requiredSkills && job.requiredSkills.length > 0 && (
-                          <div className="flex flex-wrap gap-2">
-                            {job.requiredSkills.map((skill, idx) => (
-                              <SkillChip
-                                key={idx}
-                                skill={skill}
-                                variant={job.matchedSkills?.includes(skill) ? "success" : "missing"}
-                              />
+                        <div className="text-xs font-semibold text-green-700 mb-2">Matched Skills</div>
+                        {Array.isArray(job.matched_skills) && job.matched_skills.length > 0 && (
+                          <div className="flex flex-wrap gap-2 mb-3">
+                            {job.matched_skills.slice(0, 8).map((skill, idx) => (
+                              <SkillChip key={idx} skill={skill} variant="success" />
                             ))}
                           </div>
+                        )}
+
+                        <div className="text-xs font-semibold text-rose-700 mb-2">Missing Skills</div>
+                        {Array.isArray(job.missing_skills) && job.missing_skills.length > 0 && (
+                          <div className="flex flex-wrap gap-2">
+                            {job.missing_skills.slice(0, 10).map((skill, idx) => (
+                              <SkillChip key={`m-${idx}`} skill={skill} variant="missing" />
+                            ))}
+                          </div>
+                        )}
+                        {Array.isArray(job.missing_skills) && job.missing_skills.length === 0 && (
+                          <p className="text-sm text-green-700">No critical missing skills detected.</p>
                         )}
                       </div>
                     </div>
@@ -216,20 +203,36 @@ const JobRecommendations = () => {
 
                   {/* Right Section */}
                   <div className="flex flex-col items-center justify-center gap-4 lg:border-l lg:pl-6" style={{ borderColor: 'rgba(255, 255, 255, 0.3)' }}>
-                    <ProgressRing percentage={job.matchScore || 0} size={80} label="Match" />
-                    <div className="flex gap-2 w-full lg:w-auto">
-                      <button className="px-4 py-2 rounded-lg border-2 text-sm font-medium transition-all duration-300 hover:scale-105 flex-1 lg:flex-none" style={{ borderColor: '#EC4899', color: '#EC4899', backgroundColor: 'transparent' }}>
-                        <Bookmark className="w-4 h-4 mr-1 inline" />
-                        Save
-                      </button>
+                    <ProgressRing percentage={job.match_score || job.matchScore || 0} size={80} label="Match" />
+                    <div className="grid grid-cols-1 gap-2 w-full lg:w-auto">
                       <a
-                        href={job.url || job.apply_url || '#'}
+                        href={job.job_links?.linkedin || "#"}
                         target="_blank"
                         rel="noreferrer"
                         className="px-4 py-2 text-white rounded-lg text-sm font-medium transition-all duration-300 hover:scale-105 flex items-center justify-center flex-1 lg:flex-none"
                         style={{ background: 'linear-gradient(to right, #A855F7, #3B82F6)' }}
                       >
-                        Apply
+                        Apply via LinkedIn
+                        <ExternalLink className="w-4 h-4 ml-1" />
+                      </a>
+                      <a
+                        href={job.job_links?.indeed || "#"}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="px-4 py-2 text-white rounded-lg text-sm font-medium transition-all duration-300 hover:scale-105 flex items-center justify-center"
+                        style={{ background: 'linear-gradient(to right, #EC4899, #A855F7)' }}
+                      >
+                        Search on Indeed
+                        <ExternalLink className="w-4 h-4 ml-1" />
+                      </a>
+                      <a
+                        href={job.job_links?.naukri || "#"}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="px-4 py-2 text-white rounded-lg text-sm font-medium transition-all duration-300 hover:scale-105 flex items-center justify-center"
+                        style={{ background: 'linear-gradient(to right, #3B82F6, #06B6D4)' }}
+                      >
+                        View on Naukri
                         <ExternalLink className="w-4 h-4 ml-1" />
                       </a>
                     </div>
@@ -242,7 +245,7 @@ const JobRecommendations = () => {
 
         {/* CTA */}
         <div className="mt-12 text-center animate-fade-in">
-          <p className="text-white/80 mb-4">
+          <p className="text-slate-700 mb-4">
             Need personalized career advice?
           </p>
           <Link to="/app/ai-advisor">
