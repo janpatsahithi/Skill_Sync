@@ -7,12 +7,13 @@ from bson.errors import InvalidId
 import pdfplumber
 import docx
 from app.models.skill_extractor import SkillExtractor
-from app.services.skill_postprocessor import clean_and_deduplicate
+from app.models.skill_postprocessor import SkillPostProcessor
 
 router = APIRouter()
 
 # Instantiate extractor once
 extractor = SkillExtractor()
+postprocessor = SkillPostProcessor()
 
 
 def extract_text(file: UploadFile) -> str:
@@ -57,9 +58,50 @@ def upload_resume(
     resume_collection = db["resumes"]
     user_skills_collection = db["user_skills"]
 
-    # Extract skills from resume text
-    raw_skills = extractor.extract(text)
-    skills = clean_and_deduplicate(raw_skills)
+    # Extract + post-process skills
+    raw_skills = extractor.extract_skills(text)
+    processed_result = postprocessor.process(raw_skills)
+    full_processed = processed_result["full_skills"]
+    display_processed = processed_result["display_skills"]
+
+    display_skills = [
+        {
+            "skill": str(item.get("label", "")).lower().strip(),  # backward compatibility
+            "normalized_key": str(item.get("normalized_key", "")).strip(),
+            "label": str(item.get("label", "")).strip(),
+            "category": str(item.get("category", "other")).strip(),
+            "uri": item.get("uri"),
+            "confidence": round(float(item.get("confidence", item.get("similarity", 0.0))), 3),  # backward compatibility
+            "similarity": round(float(item.get("similarity", 0.0)), 3),
+            "source": str(item.get("source", "esco" if item.get("uri") else "fallback")),
+            "section": str(item.get("section", "other")),
+        }
+        for item in display_processed
+        if item.get("label")
+    ]
+
+    full_skills = [
+        {
+            "skill": str(item.get("label", "")).lower().strip(),  # backward compatibility
+            "normalized_key": str(item.get("normalized_key", "")).strip(),
+            "label": str(item.get("label", "")).strip(),
+            "category": str(item.get("category", "other")).strip(),
+            "uri": item.get("uri"),
+            "confidence": round(float(item.get("confidence", item.get("similarity", 0.0))), 3),  # backward compatibility
+            "similarity": round(float(item.get("similarity", 0.0)), 3),
+            "source": str(item.get("source", "esco" if item.get("uri") else "fallback")),
+            "section": str(item.get("section", "other")),
+        }
+        for item in full_processed
+        if item.get("label")
+    ]
+
+    esco_count = sum(1 for s in full_skills if s.get("source") == "esco")
+    fallback_count = sum(1 for s in full_skills if s.get("source") == "fallback")
+    print("\nFINAL SKILLS BEING SAVED:")
+    print("Total:", len(full_skills))
+    print("ESCO count:", esco_count)
+    print("Fallback count:", fallback_count)
 
     resume_doc = {
         "user_id": user["user_id"],
@@ -67,30 +109,35 @@ def upload_resume(
         "filename": file.filename,
         "text": text,
         "file_size": len(text),  # Approximate size
-        "skills_count": len(skills),
+        "skills_count": len(full_skills),
         "uploaded_at": datetime.utcnow()
     }
 
     result = resume_collection.insert_one(resume_doc)
     resume_id = str(result.inserted_id)
 
-    # Store extracted skills for the user
-    user_skills_collection.update_one(
-        {"email": user.get("email")},
+    # Hard overwrite existing user skills before saving latest extraction.
+    user_skills_collection.delete_many(
         {
-            "$set": {
-                "email": user.get("email"),
-                "skills": skills,
-                "updated_at": datetime.utcnow()
-            }
-        },
-        upsert=True
+            "$or": [
+                {"email": user.get("email")},
+                {"user_id": user.get("user_id")},
+            ]
+        }
+    )
+    user_skills_collection.insert_one(
+        {
+            "email": user.get("email"),
+            "user_id": user.get("user_id"),
+            "skills": full_skills,
+            "updated_at": datetime.utcnow(),
+        }
     )
 
     return {
         "message": "Resume uploaded successfully",
         "filename": file.filename,
-        "skills": skills,
+        "skills": display_skills,
         "resume_id": resume_id
     }
 

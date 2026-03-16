@@ -1,0 +1,62 @@
+{
+  "tech_mode": true,
+  "categories": {
+    "programming_languages": {
+      "python": "Python",
+      "java": "Java",
+      "javascript": "JavaScript",
+      "typescript": "TypeScript",
+      "c++": "C++",
+      "c#": "C#"
+    },
+    "frontend": {
+      "react": "React",
+      "angular": "Angular",
+      "vue": "Vue",
+      "html": "HTML",
+      "css": "CSS",
+      "tailwind": "Tailwind CSS"
+    },
+    "backend": {
+      "node": "Node.js",
+      "express": "Express.js",
+      "flask": "Flask",
+      "fastapi": "FastAPI",
+      "spring": "Spring Boot",
+      "django": "Django"
+    },
+    "databases": {
+      "mysql": "MySQL",
+      "postgresql": "PostgreSQL",
+      "mongodb": "MongoDB",
+      "redis": "Redis"
+    },
+    "devops_cloud": {
+      "docker": "Docker",
+      "kubernetes": "Kubernetes",
+      "aws": "AWS",
+      "azure": "Azure",
+      "gcp": "Google Cloud"
+    },
+    "data_ai": {
+      "pandas": "Pandas",
+      "numpy": "NumPy",
+      "matplotlib": "Matplotlib",
+      "seaborn": "Seaborn",
+      "machine learning": "Machine Learning",
+      "linear regression": "Linear Regression",
+      "logistic regression": "Logistic Regression"
+    },
+    "tools": {
+      "git": "Git",
+      "github": "GitHub",
+      "postman": "Postman"
+    },
+    "concepts": {
+      "rest api": "REST API",
+      "jwt": "JWT",
+      "rag": "Retrieval-Augmented Generation",
+      "chromadb": "ChromaDB"
+    }
+  }
+}

@@ -9,11 +9,13 @@ const Landing = () => {
   return (
     <div className="min-h-screen bg-white pt-16">
       <Navbar />
-      <HeroSection />
-      <ProblemSolutionSection />
-      <HowItWorksSection />
-      <CoreFeaturesSection />
-      <FinalCtaSection />
+      <>
+        <HeroSection />
+        <ProblemSolutionSection />
+        <HowItWorksSection />
+        <CoreFeaturesSection />
+        <FinalCtaSection />
+      </>
     </div>
   )
 }

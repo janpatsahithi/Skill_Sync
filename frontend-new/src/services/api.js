@@ -60,12 +60,15 @@ export const communityAPI = {
   getPost: (id) => api.get(`/community/posts/${id}`),
   updatePost: (id, data) => api.put(`/community/posts/${id}`, data),
   deletePost: (id) => api.delete(`/community/posts/${id}`),
+  votePost: (id, vote_type) => api.post(`/community/posts/${id}/vote`, { vote_type }),
   upvotePost: (id) => api.post(`/community/posts/${id}/upvote`),
   getComments: (postId) => api.get(`/community/posts/${postId}/comments`),
-  createComment: (postId, data) => api.post(`/community/posts/${postId}/comments`, data),
+  createComment: (postId, data) => api.post(`/community/posts/${postId}/comment`, data),
+  createReply: (postId, data) => api.post(`/community/posts/${postId}/reply`, data),
   updateComment: (id, data) => api.put(`/community/comments/${id}`, data),
   deleteComment: (id) => api.delete(`/community/comments/${id}`),
   upvoteComment: (id) => api.post(`/community/comments/${id}/upvote`),
+  getSkillTags: (params) => api.get('/community/skill-tags', { params }),
 }
 
 // Collaborate API
@@ -80,6 +83,7 @@ export const collaborateAPI = {
   getProjectRequests: (projectId, params) => api.get(`/collaborate/projects/${projectId}/requests`, { params }),
   updateRequest: (requestId, data) => api.put(`/collaborate/requests/${requestId}`, data),
   getOpportunities: (params) => api.get('/collaborate/opportunities', { params }),
+  getExternalOpportunities: (type) => api.get('/collaborate/external-opportunities', { params: { type } }),
   createOpportunity: (data) => api.post('/collaborate/opportunities', data),
   getMyTeams: () => api.get('/collaborate/my-teams'),
   getSkillMatches: () => api.get('/collaborate/projects/matches/me'),
@@ -128,8 +132,13 @@ export const aiEngineAPI = {
   extractSkills: (data) => api.post('/skills/extract', data),
   analyzeGap: (data) => api.post('/skills/gap', data),
   getJobRecommendations: (data) => api.post('/jobs/recommend', data),
+  getRoleConstrainedRecommendations: (params) => api.get('/jobs/recommendations', { params }),
   getLearningPath: (data) => api.post('/learning/path', data),
   getOccupations: () => api.get('/skills/occupations'),
+}
+
+export const analysisAPI = {
+  getRecommendedRoles: () => api.get('/analysis/recommended-roles'),
 }
 
 // RAG API
@@ -148,10 +157,9 @@ export const projectsAPI = {
 
 // Messaging API (using community comments as conversations)
 export const messagingAPI = {
-  getConversations: () => api.get('/community/posts', { params: { category: 'message', limit: 50 } }),
-  getMessages: (conversationId) => api.get(`/community/posts/${conversationId}/comments`),
-  sendMessage: (conversationId, data) => api.post(`/community/posts/${conversationId}/comments`, data),
-  createConversation: (data) => api.post('/community/posts', { ...data, category: 'message' }),
+  getConversations: () => api.get('/community/private/conversations'),
+  getMessages: (otherUserId) => api.get(`/community/private/messages/${otherUserId}`),
+  sendMessage: (otherUserId, data) => api.post(`/community/private/messages/${otherUserId}`, data),
 }
 
 // Profile/Settings API

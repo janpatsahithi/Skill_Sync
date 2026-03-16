@@ -1,9 +1,14 @@
+import os
+from dotenv import load_dotenv
 from pymongo import MongoClient
 
-MONGO_URI = "mongodb://localhost:27017"
+load_dotenv()
 
-client = MongoClient(MONGO_URI)
-db = client["skillsync"]
+MONGODB_URI = os.getenv("MONGODB_URI", "mongodb://localhost:27017")
+DB_NAME = os.getenv("DB_NAME", "skillsync")
+
+client = MongoClient(MONGODB_URI)
+db = client[DB_NAME]
 
 # Existing collections
 user_skills_collection = db["user_skills"]
@@ -15,6 +20,8 @@ goals_collection = db["goals"]  # User goals (short-term/long-term)
 tasks_collection = db["tasks"]  # Tasks linked to goals
 posts_collection = db["posts"]  # Community posts
 comments_collection = db["comments"]  # Comments on posts
+votes_collection = db["votes"]  # Post votes
+private_messages_collection = db["private_messages"]  # Private collaboration messages
 resources_collection = db["resources"]  # Learning resources
 feedback_collection = db["feedback"]  # User feedback on recommendations
 market_skill_trends_collection = db["market_skill_trends"]  # Cached live market skill trends

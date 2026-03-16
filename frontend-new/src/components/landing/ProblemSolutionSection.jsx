@@ -15,7 +15,7 @@ const ProblemSolutionSection = () => {
   ]
 
   return (
-    <section className="py-20 bg-white">
+    <section id="about" className="py-20 bg-white">
       <div className="mx-auto grid max-w-7xl grid-cols-1 gap-6 px-4 sm:px-6 lg:grid-cols-2 lg:px-8">
         <div className="rounded-2xl border border-red-100 bg-red-50/50 p-8 shadow-sm">
           <h2 className="text-2xl font-bold text-slate-900">Confused About Your Career Direction?</h2>

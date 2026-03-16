@@ -14,9 +14,8 @@ const ProgressRing = ({
       <svg width={size} height={size} className="-rotate-90">
         <defs>
           <linearGradient id={gradientId}>
-            <stop offset="0%" stopColor="#A855F7" />
-            <stop offset="50%" stopColor="#EC4899" />
-            <stop offset="100%" stopColor="#3B82F6" />
+            <stop offset="0%" stopColor="#8B5CF6" />
+            <stop offset="100%" stopColor="#22C55E" />
           </linearGradient>
         </defs>
         <circle

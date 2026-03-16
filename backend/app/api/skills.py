@@ -5,9 +5,9 @@ from app.core.deps import get_current_user
 from app.db.database import user_skills_collection
 
 from app.models.skill_extractor import SkillExtractor
+from app.models.skill_postprocessor import SkillPostProcessor
 from app.schemas import SkillExtractRequest, SkillGapRequest, OccupationResponse
 
-from app.services.skill_postprocessor import clean_and_deduplicate
 from app.services.skill_gap_service import compute_skill_gap
 from app.services.job_role_service import get_valid_occupations
 
@@ -16,6 +16,7 @@ router = APIRouter(prefix="/skills", tags=["Skills"])
 
 # Instantiate ONCE (good practice)
 extractor = SkillExtractor()
+postprocessor = SkillPostProcessor()
 
 
 # -----------------------------
@@ -38,10 +39,43 @@ def extract_skills(
         }
 
     # 1️⃣ Extract raw skills (ESCO + NLP)
-    raw_skills = extractor.extract(resume_text)
+    raw_skills = extractor.extract_skills(resume_text)
 
     # 2️⃣ Clean + deduplicate (CANONICAL)
-    skills = clean_and_deduplicate(raw_skills)
+    processed_result = postprocessor.process(raw_skills)
+    full_processed = processed_result["full_skills"]
+    display_processed = processed_result["display_skills"]
+    skills = [
+        {
+            "skill": str(item.get("label", "")).lower().strip(),
+            "normalized_key": str(item.get("normalized_key", "")).strip(),
+            "label": str(item.get("label", "")).strip(),
+            "category": str(item.get("category", "other")).strip(),
+            "uri": item.get("uri"),
+            "confidence": round(float(item.get("confidence", item.get("similarity", 0.0))), 3),
+            "similarity": round(float(item.get("similarity", 0.0)), 3),
+            "source": str(item.get("source", "esco" if item.get("uri") else "fallback")),
+            "section": str(item.get("section", "other")),
+        }
+        for item in display_processed
+        if item.get("label")
+    ]
+
+    full_skills = [
+        {
+            "skill": str(item.get("label", "")).lower().strip(),
+            "normalized_key": str(item.get("normalized_key", "")).strip(),
+            "label": str(item.get("label", "")).strip(),
+            "category": str(item.get("category", "other")).strip(),
+            "uri": item.get("uri"),
+            "confidence": round(float(item.get("confidence", item.get("similarity", 0.0))), 3),
+            "similarity": round(float(item.get("similarity", 0.0)), 3),
+            "source": str(item.get("source", "esco" if item.get("uri") else "fallback")),
+            "section": str(item.get("section", "other")),
+        }
+        for item in full_processed
+        if item.get("label")
+    ]
 
     # 3️⃣ Store in DB
     user_skills_collection.update_one(
@@ -49,7 +83,7 @@ def extract_skills(
         {
             "$set": {
                 "email": email,
-                "skills": skills,
+                "skills": full_skills,
                 "updated_at": datetime.utcnow()
             }
         },
@@ -151,7 +185,8 @@ def get_my_skills(current_user: dict = Depends(get_current_user)):
     data = user_skills_collection.find_one({"email": email})
     if not data or not data.get("skills"):
         return {"skills": [], "total_skills": 0}
-    return {"skills": data["skills"], "total_skills": len(data["skills"])}
+    display_skills = postprocessor.build_display_skills(data["skills"])
+    return {"skills": display_skills, "total_skills": len(display_skills)}
 
 
 # -----------------------------

@@ -10,6 +10,7 @@ import Profile from './pages/Profile'
 import Guidance from './pages/Guidance'
 import Planning from './pages/Planning'
 import Community from './pages/Community'
+import CommunityPostDetail from './pages/CommunityPostDetail'
 import CollaborateOverview from './pages/CollaborateOverview'
 import CollaborateProjects from './pages/CollaborateProjects'
 import CollaborateProjectDetail from './pages/CollaborateProjectDetail'
@@ -60,6 +61,7 @@ function App() {
               <Route path="collaborate/opportunities" element={<CollaborateOpportunities />} />
               <Route path="collaborate/my-teams" element={<MyTeams />} />
               <Route path="community" element={<Community />} />
+              <Route path="community/posts/:postId" element={<CommunityPostDetail />} />
               <Route path="projects" element={<Projects />} />
               <Route path="messaging" element={<Messaging />} />
               <Route path="profile" element={<Profile />} />
@@ -70,6 +72,7 @@ function App() {
               <Route path="resume-upload" element={<ResumeUpload />} />
               <Route path="extracted-skills" element={<ExtractedSkills />} />
               <Route path="skill-gap-analysis" element={<SkillGapAnalysis />} />
+              <Route path="analysis/result" element={<SkillGapAnalysis />} />
               <Route path="job-recommendations" element={<JobRecommendations />} />
               <Route path="ai-advisor" element={<AIAdvisor />} />
               <Route path="guidance" element={<Guidance />} />

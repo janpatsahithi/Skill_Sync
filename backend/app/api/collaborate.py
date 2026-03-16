@@ -132,6 +132,62 @@ def _normalize_skills(skills: List[str]) -> List[str]:
     return cleaned
 
 
+def _extract_user_skill_labels(raw_skills: list) -> list[str]:
+    labels: list[str] = []
+    for skill in raw_skills:
+        if isinstance(skill, str):
+            value = skill.strip()
+        elif isinstance(skill, dict):
+            value = str(skill.get("label") or skill.get("skill") or skill.get("normalized_key") or "").strip()
+        else:
+            value = str(skill).strip()
+        if value:
+            labels.append(value)
+    return labels
+
+
+def _get_user_skills(user_email: str) -> list[str]:
+    skills_doc = user_skills_collection.find_one({"email": user_email}) or {}
+    labels = _extract_user_skill_labels(skills_doc.get("skills", []))
+    # Keep deterministic unique order.
+    seen = set()
+    unique: list[str] = []
+    for label in labels:
+        key = label.strip().lower()
+        if key and key not in seen:
+            seen.add(key)
+            unique.append(label)
+    return unique
+
+
+def _unstop_category_url(opportunity_type: str) -> str:
+    type_to_url = {
+        "hackathon": "https://unstop.com/hackathons",
+        "internship": "https://unstop.com/internships",
+        "workshop": "https://unstop.com/workshops",
+        "competition": "https://unstop.com/competitions",
+    }
+    return type_to_url[opportunity_type]
+
+
+def _format_unstop_skill(skill: str) -> str:
+    return "-".join(str(skill).strip().lower().split())
+
+
+def _generate_unstop_link(user_skills: list[str], opportunity_type: str) -> str:
+    base_url = _unstop_category_url(opportunity_type)
+    if not user_skills:
+        return base_url
+
+    selected_skills = user_skills[:2]
+    formatted = [_format_unstop_skill(skill) for skill in selected_skills if str(skill).strip()]
+    if not formatted:
+        return base_url
+
+    search_query = "+".join(formatted)
+    return f"{base_url}?search={search_query}"
+
+
 def _close_project_if_full(project_id: ObjectId) -> None:
     project = collaboration_projects_collection.find_one({"_id": project_id})
     if not project:
@@ -497,6 +553,19 @@ def list_opportunities(
         opportunities_collection.find(query).sort([("deadline", 1), ("created_at", -1)]).skip(skip).limit(limit)
     )
     return [_to_opportunity_response(opportunity) for opportunity in opportunities]
+
+
+@router.get("/external-opportunities")
+def external_opportunities_redirect(
+    type: str = Query(..., regex="^(hackathon|internship|workshop|competition)$"),
+    current_user: dict = Depends(get_current_user),
+):
+    _ensure_indexes()
+    user_email = current_user.get("email")
+    user_skills = _get_user_skills(user_email)
+    return {
+        "redirect_url": _generate_unstop_link(user_skills, type),
+    }
 
 
 @router.post("/opportunities", response_model=OpportunityResponse)

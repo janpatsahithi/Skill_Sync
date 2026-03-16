@@ -1,4 +1,4 @@
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel, EmailStr, Field
 from typing import List, Optional, Literal
 from datetime import datetime
 
@@ -58,6 +58,29 @@ class OccupationResponse(BaseModel):
     uri: str
     source: Optional[str] = None
     category: Optional[str] = None
+
+
+# -----------------------------
+# JOB RECOMMENDATIONS
+# -----------------------------
+class JobLinks(BaseModel):
+    linkedin: str
+    indeed: str
+    naukri: str
+
+
+class JobRecommendationResponse(BaseModel):
+    role: str
+    match_score: int
+    description: str
+    matched_skills: List[str]
+    missing_skills: List[str]
+    job_links: JobLinks
+
+
+class JobRecommendationListResponse(BaseModel):
+    jobs: List[JobRecommendationResponse]
+    message: Optional[str] = None
 
 
 # -----------------------------
@@ -197,12 +220,6 @@ CommunityPostType = Literal[
 ]
 
 
-class PostComment(BaseModel):
-    user_id: str
-    content: str
-    created_at: datetime
-
-
 class PostCreate(BaseModel):
     title: str
     content: str
@@ -227,27 +244,6 @@ class PostUpdate(BaseModel):
     experience_level: Optional[str] = None
 
 
-class PostResponse(BaseModel):
-    id: str
-    author_id: str
-    author_name: str
-    title: str
-    content: str
-    type: CommunityPostType
-    skill_tags: List[str]
-    company: Optional[str] = None
-    role: Optional[str] = None
-    experience_level: Optional[str] = None
-    likes: int
-    category: Optional[str] = None
-    tags: List[str] = []
-    upvotes: int = 0
-    comment_count: int = 0
-    comments: List[PostComment] = []
-    created_at: datetime
-    updated_at: Optional[datetime] = None
-
-
 class CommentCreate(BaseModel):
     content: str
 
@@ -258,10 +254,39 @@ class CommentUpdate(BaseModel):
 
 class CommentResponse(BaseModel):
     id: str
-    user_id: str
-    author_name: str
     content: str
+    author: str
     created_at: datetime
+    replies: List["CommentResponse"] = Field(default_factory=list)
+
+
+class PostListResponse(BaseModel):
+    id: str
+    title: str
+    author: str
+    created_at: datetime
+    updated_at: Optional[datetime] = None
+    comment_count: int
+    upvotes: int
+    downvotes: int
+    skill_tags: List[str] = Field(default_factory=list)
+
+
+class PostDetailResponse(PostListResponse):
+    content: str
+    comments: List[CommentResponse] = Field(default_factory=list)
+
+
+class VoteRequest(BaseModel):
+    vote_type: Literal["upvote", "downvote"]
+
+
+class ReplyCreate(BaseModel):
+    content: str
+    parent_comment_id: str
+
+
+CommentResponse.model_rebuild()
 
 
 # -----------------------------

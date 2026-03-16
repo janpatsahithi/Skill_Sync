@@ -44,3 +44,8 @@ body {
   transition-duration: 150ms;
 }
 
+.hero-bg {
+  position: relative;
+  background: linear-gradient(135deg, #dbeafe 0%, #ddd6fe 35%, #fbcfe8 70%, #bfdbfe 100%);
+  background-size: cover;
+}

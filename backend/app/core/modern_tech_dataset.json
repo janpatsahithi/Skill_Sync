@@ -1,0 +1,77 @@
+{
+  "programming_languages": {
+    "python": ["python"],
+    "java": ["java"],
+    "javascript": ["javascript", "js"],
+    "typescript": ["typescript", "ts"],
+    "c": ["c"],
+    "cpp": ["c++"],
+    "csharp": ["c#", "c sharp"],
+    "go": ["go", "golang"],
+    "rust": ["rust"],
+    "kotlin": ["kotlin"],
+    "swift": ["swift"]
+  },
+  "frontend_frameworks": {
+    "react": ["react", "reactjs"],
+    "nextjs": ["next.js", "nextjs"],
+    "angular": ["angular"],
+    "vue": ["vue", "vuejs"],
+    "tailwind": ["tailwind", "tailwindcss", "tailwind css"],
+    "bootstrap": ["bootstrap"]
+  },
+  "backend_frameworks": {
+    "node": ["node", "nodejs", "node.js"],
+    "express": ["express", "express.js"],
+    "fastapi": ["fastapi"],
+    "flask": ["flask"],
+    "django": ["django"],
+    "spring": ["spring", "spring boot"]
+  },
+  "databases": {
+    "mysql": ["mysql"],
+    "postgresql": ["postgresql", "postgres"],
+    "mongodb": ["mongodb"],
+    "redis": ["redis"],
+    "firebase": ["firebase"]
+  },
+  "devops_cloud": {
+    "docker": ["docker"],
+    "kubernetes": ["kubernetes", "k8s"],
+    "aws": ["aws", "amazon web services"],
+    "azure": ["azure"],
+    "gcp": ["gcp", "google cloud"],
+    "terraform": ["terraform"],
+    "jenkins": ["jenkins"]
+  },
+  "data_ai": {
+    "pandas": ["pandas"],
+    "numpy": ["numpy"],
+    "matplotlib": ["matplotlib"],
+    "seaborn": ["seaborn"],
+    "scikit_learn": ["scikit-learn", "sklearn"],
+    "tensorflow": ["tensorflow"],
+    "pytorch": ["pytorch"],
+    "machine_learning": ["machine learning"],
+    "deep_learning": ["deep learning"],
+    "linear_regression": ["linear regression"],
+    "logistic_regression": ["logistic regression"],
+    "rag": ["rag", "retrieval augmented generation"],
+    "chromadb": ["chromadb"]
+  },
+  "tools": {
+    "git": ["git"],
+    "github": ["github"],
+    "postman": ["postman"],
+    "jira": ["jira"],
+    "linux": ["linux"],
+    "bash": ["bash"]
+  },
+  "concepts": {
+    "rest_api": ["rest api", "restful api"],
+    "graphql": ["graphql"],
+    "jwt": ["jwt", "json web token"],
+    "microservices": ["microservices"],
+    "oop": ["object oriented programming", "oop"]
+  }
+}
