@@ -1,10 +1,8 @@
-import os
 import logging
-from dotenv import load_dotenv
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-load_dotenv()
+from app.db.database import is_database_connected
 
 from app.api import users
 from app.api import resume
@@ -35,20 +33,14 @@ logger = logging.getLogger(__name__)
 # ------------------------------------------------------------------
 # App
 # ------------------------------------------------------------------
-app = FastAPI(title="SkillWeave API")
+app = FastAPI()
 
 # ------------------------------------------------------------------
-# CORS (DEV-SAFE, can be restricted in prod)
+# CORS
 # ------------------------------------------------------------------
-cors_origins = os.getenv("CORS_ALLOW_ORIGINS", "*")
-if cors_origins.strip() == "*":
-    allow_origins = ["*"]
-else:
-    allow_origins = [origin.strip() for origin in cors_origins.split(",") if origin.strip()]
-
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=allow_origins,
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -59,16 +51,26 @@ app.add_middleware(
 # ------------------------------------------------------------------
 @app.on_event("startup")
 async def startup_event():
+    logger.info("SkillWeave API server starting...")
+
+    if is_database_connected():
+        logger.info("MongoDB status: connected")
+    else:
+        logger.error("MongoDB status: unavailable")
+
     logger.info("Validating datasets on startup...")
 
-    if DatasetValidator.validate_all():
-        logger.info("All datasets validated successfully")
-    else:
-        logger.warning("Some datasets failed validation")
+    try:
+        if DatasetValidator.validate_all():
+            logger.info("All datasets validated successfully")
+        else:
+            logger.warning("Some datasets failed validation")
 
-    stats = DatasetValidator.get_dataset_stats()
-    for dataset, info in stats.items():
-        logger.info(f"{dataset}: {info}")
+        stats = DatasetValidator.get_dataset_stats()
+        for dataset, info in stats.items():
+            logger.info("%s: %s", dataset, info)
+    except Exception:
+        logger.exception("Dataset validation failed on startup")
 
 # ------------------------------------------------------------------
 # Routers
@@ -92,6 +94,12 @@ app.include_router(community.router)
 app.include_router(resources.router)
 app.include_router(feedback.router)
 app.include_router(collaborate.router)
+
+
+@app.get("/health")
+def health():
+    return {"status": "ok"}
+
 
 # ------------------------------------------------------------------
 # Root

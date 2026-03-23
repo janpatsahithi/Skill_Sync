@@ -1,4 +1,3 @@
-from pathlib import Path
+from app.core.config import BASE_DIR, DATASET_DIR, settings
 
-BASE_DIR = Path(__file__).resolve().parent.parent
-DATASET_DIR = BASE_DIR / "datasets"
+__all__ = ["BASE_DIR", "DATASET_DIR", "settings"]

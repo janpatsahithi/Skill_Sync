@@ -88,9 +88,25 @@ const JobRecommendations = () => {
         roleFilter ? { role: roleFilter } : {}
       );
       setJobs(response.data?.recommended_jobs || response.data?.jobs || []);
-    } catch (err) {
-      console.error("Failed to fetch jobs:", err);
-      setError(normalizeErrorMessage(err));
+    } catch (roleConstrainedErr) {
+      try {
+        // Backward-compatible fallback for environments without /jobs/recommendations.
+        const skillUris = currentSkills
+          .map((s) => (typeof s === "string" ? null : s.uri || null))
+          .filter(Boolean);
+        const fallbackSkillNames = currentSkills.map((s) =>
+          typeof s === "string" ? s : s.skill || s.name || s
+        );
+        const payloadSkills = skillUris.length > 0 ? skillUris : fallbackSkillNames;
+
+        const fallbackResponse = await aiEngineAPI.getJobRecommendations({
+          skills: payloadSkills,
+        });
+        setJobs(fallbackResponse.data?.jobs || fallbackResponse.data || []);
+      } catch (err) {
+        console.error("Failed to fetch jobs:", roleConstrainedErr, err);
+        setError(normalizeErrorMessage(err));
+      }
     } finally {
       setIsLoading(false);
     }
@@ -155,7 +171,6 @@ const JobRecommendations = () => {
             </select>
           </div>
         </div>
-
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
           <div className="rounded-xl border p-4 text-center animate-fade-in" style={{ backgroundColor: 'rgba(255, 255, 255, 0.2)', borderColor: 'rgba(255, 255, 255, 0.3)' }}>
             <p className="text-2xl font-bold text-slate-900">{jobs.length}</p>

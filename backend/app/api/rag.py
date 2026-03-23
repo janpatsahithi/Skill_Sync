@@ -1,32 +1,23 @@
-# app/api/rag.py
-
 import json
 from typing import Any
+
 from fastapi import APIRouter, Depends
+
 from app.core.deps import optional_auth
 from app.db.database import user_context_collection, user_skills_collection
 from app.models.job_recommender import JobRecommender
-from app.models.rag_retriever import RAGRetriever
 from app.models.llm_client import gemini_generate_json
-from app.services.job_recommendation_presenter import role_meta, skill_name, display_match_score
+from app.models.rag_retriever import RAGRetriever
+from app.services.job_recommendation_presenter import (
+    display_match_score,
+    role_meta,
+    skill_name,
+)
 
 router = APIRouter(prefix="/rag", tags=["RAG"])
 
 retriever = RAGRetriever()
 job_recommender = JobRecommender()
-
-
-def _normalize_missing_skills(raw_missing: Any) -> list[str]:
-    if not isinstance(raw_missing, list):
-        return []
-
-    skills: list[str] = []
-    for item in raw_missing:
-        if isinstance(item, str):
-            skills.append(item)
-        elif isinstance(item, dict) and item.get("skill"):
-            skills.append(str(item["skill"]))
-    return skills
 
 
 def detect_intent(message: str) -> str:
@@ -161,6 +152,8 @@ def _normalize_llm_response(raw: Any) -> str:
         return raw["summary"]
     if raw.get("error") and raw.get("raw"):
         return str(raw.get("raw"))
+    if raw.get("error") and not raw.get("raw"):
+        return str(raw.get("error"))
     return json.dumps(raw, ensure_ascii=False)
 
 
@@ -177,10 +170,6 @@ def _ensure_action_recommendation(answer: str, context: dict) -> str:
 
 
 def _sanitize_advisor_output(answer: str) -> str:
-    """
-    Keep output plain-text and conversational.
-    Strips markdown emphasis markers and trims excessive whitespace.
-    """
     text = str(answer or "").replace("**", "")
     lines = [line.strip() for line in text.splitlines()]
     compact = "\n".join(line for line in lines if line)
@@ -191,10 +180,10 @@ def _extract_readiness_role(query: str) -> str:
     text = (query or "").strip()
     lower = text.lower()
     markers = ["ready for", "am i ready for", "ready to become", "ready to work as"]
-    for m in markers:
-        idx = lower.find(m)
+    for marker in markers:
+        idx = lower.find(marker)
         if idx >= 0:
-            role = text[idx + len(m):].strip(" ?.,!")
+            role = text[idx + len(marker):].strip(" ?.,!")
             return role
     return ""
 
@@ -274,24 +263,21 @@ def ask_rag(query: str, current_user: dict | None = Depends(optional_auth)):
 
     prompt_payload = {
         "system_role": (
-            "You are a supportive career mentor. Speak naturally and conversationally. "
-            "Do not use markdown formatting. "
-            "Keep responses concise and practical. "
-            "Avoid robotic phrasing. "
-            "Sound like a real person giving guidance."
+            "You are a supportive career mentor. "
+            "Answer only the user's specific career question using provided data. "
+            "Speak naturally and conversationally in plain text. "
+            "Do not generate multi-section reports unless asked."
         ),
         "intent": intent,
         "rules": [
             "Answer only the user's specific question.",
             "Use only provided data (question, normalized skills, job matches, skill gap, RAG context).",
             "Use simple, direct, human language.",
-            "Give a short alignment statement first when relevant.",
-            "Briefly explain why the fit is high, moderate, or low using the provided data.",
-            "Avoid heavy formatting, bullets, or headings unless absolutely necessary.",
+            "Interpret match scores in practical terms when relevant.",
+            "Explain missing skills and why alignment is high/moderate/low when relevant.",
             "Do not use markdown markers like **.",
-            "Avoid robotic phrases such as: 'Based on your current skill set', 'It is evident that', 'Furthermore', 'In conclusion'.",
+            "Do not output a Confidence section.",
             "Do not say 'insufficient data' unless both skills and context are empty.",
-            "Keep response length between 150 and 250 words unless the user asks for a shorter answer.",
             "End with a clear 'Next action:' recommendation.",
             length_rule,
         ],

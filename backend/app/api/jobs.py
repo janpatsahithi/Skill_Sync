@@ -1,16 +1,18 @@
-from fastapi import APIRouter, Body, Depends, Query
 from typing import Any
-from app.models.job_recommender import JobRecommender
-from app.services.market_job_service import MarketJobService
-from app.schemas import JobRecommendationResponse, JobRecommendationListResponse
-from app.utils.job_links import generate_job_links
+
+from fastapi import APIRouter, Body, Depends, Query
+
 from app.core.deps import get_current_user
+from app.models.job_recommender import JobRecommender
+from app.schemas import JobRecommendationListResponse
 from app.services.job_recommendation_presenter import (
+    display_match_score,
     role_meta,
     skill_name,
-    display_match_score,
 )
+from app.services.market_job_service import MarketJobService
 from app.services.target_role_job_recommendation_service import TargetRoleJobRecommendationService
+from app.utils.job_links import generate_job_links
 
 router = APIRouter(prefix="/jobs", tags=["Jobs"])
 
@@ -50,10 +52,9 @@ def recommend(payload: Any = Body(...)):
             }
         )
 
-    HIGH_MATCH_THRESHOLD = 60
+    high_match_threshold = 60
     high_match_roles = [
-        role for role in recommendations
-        if role["match_score"] >= HIGH_MATCH_THRESHOLD
+        role for role in recommendations if role["match_score"] >= high_match_threshold
     ]
 
     if len(high_match_roles) >= 3:
@@ -77,7 +78,6 @@ def get_role_constrained_recommendations(
     email = current_user.get("email")
     result = target_role_service.recommend(email=email, selected_role=role)
 
-    # Attach external links while preserving the constrained response format.
     enriched = []
     for item in result.get("recommended_jobs", []):
         row = {

@@ -1,10 +1,13 @@
 from datetime import datetime, timedelta
 from jose import jwt
+from app.core.config import settings
 
-# later move these to .env
-SECRET_KEY = "supersecretkey"
-ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 60
+SECRET_KEY = settings.JWT_SECRET
+ALGORITHM = settings.JWT_ALGORITHM
+ACCESS_TOKEN_EXPIRE_MINUTES = settings.ACCESS_TOKEN_EXPIRE_MINUTES
+
+if not SECRET_KEY:
+    raise RuntimeError("JWT_SECRET is not configured. Set JWT_SECRET in environment variables.")
 
 
 def create_access_token(data: dict):
