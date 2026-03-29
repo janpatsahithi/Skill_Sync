@@ -1,0 +1,38 @@
+services:
+  - type: web
+    name: skillweave-backend
+    runtime: python
+    rootDir: backend
+    buildCommand: pip install -r app/requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: MONGO_URI
+        sync: false
+      - key: DB_NAME
+        value: skillsync
+      - key: JWT_SECRET
+        sync: false
+      - key: JWT_ALGORITHM
+        value: HS256
+      - key: ACCESS_TOKEN_EXPIRE_MINUTES
+        value: "60"
+      - key: GOOGLE_API_KEY
+        sync: false
+      - key: CHROMA_PERSIST_DIRECTORY
+        value: /tmp/chroma
+      - key: CORS_ORIGINS
+        sync: false
+
+  - type: web
+    name: skillweave-frontend
+    runtime: static
+    rootDir: frontend-new
+    buildCommand: npm install && npm run build
+    staticPublishPath: dist
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
+    envVars:
+      - key: VITE_API_URL
+        sync: false

@@ -2,6 +2,7 @@ import logging
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+from app.core.config import settings
 from app.db.database import is_database_connected
 
 from app.api import users
@@ -38,10 +39,12 @@ app = FastAPI()
 # ------------------------------------------------------------------
 # CORS
 # ------------------------------------------------------------------
+allow_all_origins = settings.CORS_ORIGINS == ["*"]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
+    allow_origins=settings.CORS_ORIGINS,
+    allow_credentials=not allow_all_origins,
     allow_methods=["*"],
     allow_headers=["*"],
 )

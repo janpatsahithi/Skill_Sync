@@ -21,6 +21,8 @@ class Settings:
         self.OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "").strip()
         self.GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY", "").strip()
         self.CHROMA_PERSIST_DIRECTORY = os.getenv("CHROMA_PERSIST_DIRECTORY", "/tmp/chroma").strip()
+        cors_origins = os.getenv("CORS_ORIGINS", "*").strip()
+        self.CORS_ORIGINS = [origin.strip() for origin in cors_origins.split(",") if origin.strip()]
 
 
 settings = Settings()
