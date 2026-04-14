@@ -51,9 +51,6 @@ class CollectionProxy:
         return getattr(self._collection(), item)
 
 
-# Prime connection on import for startup logs.
-_get_or_connect_db()
-
 # Existing collections
 user_skills_collection = CollectionProxy("user_skills")
 users_collection = CollectionProxy("users")

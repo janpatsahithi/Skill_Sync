@@ -1,4 +1,5 @@
 import logging
+import os
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -61,19 +62,17 @@ async def startup_event():
     else:
         logger.error("MongoDB status: unavailable")
 
-    logger.info("Validating datasets on startup...")
-
-    try:
-        if DatasetValidator.validate_all():
-            logger.info("All datasets validated successfully")
-        else:
-            logger.warning("Some datasets failed validation")
-
-        stats = DatasetValidator.get_dataset_stats()
-        for dataset, info in stats.items():
-            logger.info("%s: %s", dataset, info)
-    except Exception:
-        logger.exception("Dataset validation failed on startup")
+    if os.getenv("VALIDATE_DATASETS_ON_STARTUP") == "1":
+        logger.info("Validating datasets on startup...")
+        try:
+            if DatasetValidator.validate_all():
+                logger.info("All datasets validated successfully")
+            else:
+                logger.warning("Some datasets failed validation")
+            for dataset, info in DatasetValidator.get_dataset_stats().items():
+                logger.info("%s: %s", dataset, info)
+        except Exception:
+            logger.exception("Dataset validation failed on startup")
 
 # ------------------------------------------------------------------
 # Routers
